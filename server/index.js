@@ -5,7 +5,6 @@ const app = express();
 const server = require("http").Server(app);
 const io = require("socket.io").listen(server);
 const Datauri = require("datauri");
-const port = process.env.PORT || 8082;
 const datauri = new Datauri();
 const { JSDOM } = jsdom;
 
@@ -38,7 +37,7 @@ function setupAuthoritativePhaser() {
       };
       dom.window.URL.revokeObjectURL = (objectURL) => {};
       dom.window.done = () => {
-        server.listen(port, function () {
+        server.listen(process.env.PORT || 8082, function () {
           console.log(`Listening on ${server.address().port}`);
         });
       };
