@@ -130,6 +130,7 @@ function create() {
       x: Math.floor(Math.random() * 700) + 700,
       y: Math.floor(Math.random() * 500) + 400,
       playerId: socket.id,
+      userName: "newb" + Object.keys(players).length,
       team: Math.floor(Math.random() * 2) == 0 ? "red" : "blue",
       skin: allSkins[Math.floor(Math.random() * allSkins.length)],
       input: {
@@ -187,6 +188,8 @@ function update() {
 
     players[player.playerId].x = player.x;
     players[player.playerId].y = player.y;
+    players[player.playerId].velocityX = player.body.velocity.x;
+    players[player.playerId].velocityY = player.body.velocity.y;
   });
   this.physics.world.setBounds(0, 0, 1850, 1850);
 
@@ -207,7 +210,7 @@ function handlePlayerInput(self, playerId, input) {
 
 function addPlayer(self, playerInfo) {
   const player = self.physics.add
-    .image(playerInfo.x, playerInfo.y, "leviathan")
+    .image(playerInfo.x, playerInfo.y, playerInfo.skin)
     .setOrigin(0.5, 0.5)
     .setDisplaySize(96, 96);
 

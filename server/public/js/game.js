@@ -1,3 +1,4 @@
+let userName = prompt("UserName?");
 let gameState = {
   skins: [
     "leviathan",
@@ -21,6 +22,7 @@ let gameState = {
     "walk-up": { start: 12, end: 15 },
     "walk-down": { start: 0, end: 3 },
   },
+  userNames: {},
 };
 
 var config = {
@@ -32,7 +34,7 @@ var config = {
     mode: Phaser.Scale.WIDTH_CONTROLS_HEIGHT,
     autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
   },
-  roundPixels: false,
+  roundPixels: true,
   audio: { noAudio: false },
   physics: {
     default: "arcade",
@@ -106,6 +108,7 @@ function create() {
   var self = this;
   this.socket = io();
   this.players = this.add.group();
+  this.userNames = this.add.group();
   this.bg = this.add.image(0, 0, "bg");
   this.bg.setOrigin(0, 0);
   this.blueScoreText = this.add.text(500, 430, "", {
@@ -136,10 +139,12 @@ function create() {
     Object.keys(players).forEach(function (id) {
       if (players[id].playerId === self.socket.id) {
         //Adding
+        players[id].userName = userName;
         gameState.player = self.add
           .sprite(players[id].x, players[id].y, players[id].skin, 0)
           .setOrigin(0.5, 0.5)
           .setDisplaySize(48, 96);
+
         gameState.player.play("walk-down" + "-" + players[id].skin, true);
         gameState.player.skin = players[id].skin;
         console.table(Object.entries(players[id]));
@@ -149,6 +154,12 @@ function create() {
         self.players.add(gameState.player);
         self.cameras.main.setBounds(0, 0, 1830, 1830);
         self.cameras.main.startFollow(gameState.player, true, 0.5, 0.5);
+        gameState.userName = self.add
+          .text(players[id].x, players[id].y - 75, userName, {
+            fontSize: "32px",
+            fill: "#FF0000",
+          })
+          .setOrigin(0.5, 0.5);
       } else {
         displayPlayers(self, players[id], players[id].skin);
       }
@@ -172,9 +183,15 @@ function create() {
     Object.keys(players).forEach(function (id) {
       self.players.getChildren().forEach(function (player) {
         if (players[id].playerId === player.playerId) {
-          player.setRotation(players[id].rotation);
+          players[id].userName = userName;
+          // gameState.userName.setPosition(players[id].x, players[id].y - 75);
           player.setPosition(players[id].x, players[id].y);
+          gameState.userName.setPosition(players[id].x, players[id].y - 75);
         } else {
+          // gameState.userNames[id].setPosition(
+          //   players[id].x,
+          //   players[id].y - 75
+          // );
         }
       });
     });
@@ -254,6 +271,14 @@ function displayPlayers(self, playerInfo, sprite) {
     .setOrigin(0.5, 0.5)
     .setDisplaySize(96, 96);
 
+  let user = self.add
+    .text(playerInfo.x, playerInfo.y - 75, playerInfo.userName, {
+      fontSize: "32px",
+      fill: playerInfo.team === "blue" ? "#0000FF" : "#FF0000",
+    })
+    .setOrigin(0.5, 0.5);
+  gameState.userNames[playerInfo.id] = user;
   player.playerId = playerInfo.playerId;
   self.players.add(player);
+  self.userNames.add(user);
 }
