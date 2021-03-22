@@ -2,6 +2,8 @@ const path = require("path");
 const jsdom = require("jsdom");
 const express = require("express");
 const app = express();
+const PORT = process.env.PORT || 8082;
+app.set("port", PORT);
 const server = require("http").Server(app);
 const io = require("socket.io").listen(server);
 const Datauri = require("datauri");
@@ -37,7 +39,7 @@ function setupAuthoritativePhaser() {
       };
       dom.window.URL.revokeObjectURL = (objectURL) => {};
       dom.window.done = () => {
-        server.listen(process.env.PORT || 8082, function () {
+        server.listen(PORT, function () {
           console.log(`Listening on ${server.address().port}`);
         });
       };
