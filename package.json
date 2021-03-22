@@ -11,10 +11,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@mapbox/node-pre-gyp": "github:mapbox/node-pre-gyp",
     "canvas": "^2.7.0",
-    "datauri": "^1.1.0",
+    "datauri": "^2.0.0",
     "express": "^4.16.4",
     "jsdom": "^13.0.0",
+    "mimer": "^1.1.0",
     "socket.io": "^2.1.1"
   }
 }
